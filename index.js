@@ -16,44 +16,61 @@ Como posso te ajudar hoje?
 *2* — Convênios que atendemos
 *3* — Endereço e horários
 *4* — Falar com um atendente
-*0* — Voltar ao menu`;
+// *0* — Voltar ao menu`;
 
 // Respostas de cada opção do menu principal
 const MENU = {
-  "1": `*📋 Nossos Serviços:*
+  "1": `*Agendamento*
 
-• Serviço A — descrição rápida
-• Serviço B — descrição rápida  
-• Serviço C — descrição rápida
+Trabalhamos por agendamentos e também por encaixes:
+Para realizar o agendamento clique na opção "1" para agendar com uma de nossas atendentes. Ou caso prefira, poderá vir e aguardar por um encaixe.
 
+*1* — Falar com um atendente
 Digite *0* para voltar ao menu principal.`,
 
-  "2": `*💰 Tabela de Preços:*
+  "2": `*Convênios que atendemos*
 
-• Serviço A — R$ 00,00
-• Serviço B — R$ 00,00
-• Serviço C — R$ 00,00
+Amil Dental
+Bradesco Dental
+Brazil dental
+BB dental
+DoctorCLin (Precisa ter cobertura odontológica)
+Hapvida/CCG
+OdontoPrev
+Odonto Alegre
+Odonto Empresas
+Prevident 
+Saude Pas
+Soprevi
+Sul America Odonto
+Unimed Odonto
+Uniodonto (Conferir se atendemos o seu plano Uniodonto)
 
-Preços podem variar. Para um orçamento personalizado, digite *4*.
 
 Digite *0* para voltar ao menu.`,
 
-  "3": `*📍 Onde estamos:*
+  "3": `*Endereço e horários:*
 
-🗺️ Endereço: Rua Exemplo, 123 — Bairro, Cidade
-🕐 Horário: Seg–Sex, 9h às 18h
-📞 Telefone: (00) 00000-0000
+🗺️ Endereço: Av Gen. Flores da Cunha, 903 - 8° andar sala 804/806 — Centro, Cachoeirinha
+🕐 Horário: De Segunda a Sexta das 8h ás 18h30, aos Sábados das 9h ás 13h
+📞 Telefones: (51) 3238-5180 | (51) 3238-5190
 
 Digite *0* para voltar ao menu.`,
 
-  "4": `*📞 Atendimento Humano*
+  "4": `*Falar com atendente*
 
-Você será redirecionado(a) para um de nossos atendentes.
+Você será redirecionado(a) para uma de nossas atendentes.
 Aguarde um momento — em breve alguém entrará em contato! 🙂
 
-Se preferir, ligue: (00) 00000-0000`,
+Para facilitar o nosso atendimento precisamos de alguns dados:
+Nome completo do paciente;
+Convênio ou particular;
+Foto completa da requisição do exame, frente e verso;
+Turno que deseja agendar.
 
-  "0": null, // "0" reenvia o menu de boas-vindas (tratado abaixo)
+Aguarde que a sua mensagem será respondida por ordem de envio.`,
+
+  // "0": null, // "0" reenvia o menu de boas-vindas (tratado abaixo)
 };
 
 // Mensagem para opção não reconhecida
