@@ -15,8 +15,7 @@ Como posso te ajudar hoje?
 *1* — Agendamento
 *2* — Convênios que atendemos
 *3* — Endereço e horários
-*4* — Falar com um atendente
-// *0* — Voltar ao menu`;
+*4* — Falar com um atendente`;
 
 // Respostas de cada opção do menu principal
 const MENU = {
@@ -69,8 +68,6 @@ Foto completa da requisição do exame, frente e verso;
 Turno que deseja agendar.
 
 Aguarde que a sua mensagem será respondida por ordem de envio.`,
-
-  // "0": null, // "0" reenvia o menu de boas-vindas (tratado abaixo)
 };
 
 // Mensagem para opção não reconhecida
@@ -82,11 +79,11 @@ Por favor, escolha um número do menu:\n\n${MSG_BOAS_VINDAS}`;
 //  LÓGICA DO BOT — não precisa mexer aqui
 // ============================================================
 
-// Guarda o estado de cada usuário (para saber se já foi cumprimentado)
+// Guarda o estado de cada usuário: "ativo" | "atendente"
 const usuarios = new Map();
 
 const client = new Client({
-  authStrategy: new LocalAuth(), // salva a sessão localmente (não precisa escanear QR toda vez)
+  authStrategy: new LocalAuth(),
   puppeteer: {
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -107,8 +104,30 @@ client.on("auth_failure", () => {
   console.error("❌ Falha na autenticação. Delete a pasta .wwebjs_auth e tente novamente.");
 });
 
+// Quando o ATENDENTE envia uma mensagem — para o bot naquele chat
+// Digite #bot para devolver o chat ao bot
+client.on("message_create", async (msg) => {
+  if (msg.fromMe && !msg.isGroupMsg) {
+    const numero = msg.to;
+
+    // Comando #bot — reativa o bot neste chat
+    if (msg.body.trim().toLowerCase() === "#bot") {
+      usuarios.delete(numero);
+      await client.sendMessage(numero, MSG_BOAS_VINDAS);
+      console.log(`[BOT] Chat ${numero} devolvido ao bot.`);
+      return;
+    }
+
+    // Qualquer outra mensagem do atendente pausa o bot
+    if (usuarios.get(numero) !== "atendente") {
+      usuarios.set(numero, "atendente");
+      console.log(`[BOT] Atendente respondeu ${numero} — bot pausado neste chat.`);
+    }
+  }
+});
+
+// Mensagens recebidas dos clientes
 client.on("message", async (msg) => {
-  // Ignora grupos, status e mensagens do próprio bot
   if (msg.isGroupMsg || msg.from === "status@broadcast") return;
 
   const numero = msg.from;
@@ -116,28 +135,33 @@ client.on("message", async (msg) => {
 
   console.log(`[${new Date().toLocaleTimeString()}] ${numero}: ${texto}`);
 
-  // Se o usuário ainda não interagiu, envia boas-vindas
+  // Chat já está com atendente humano — bot não responde
+  if (usuarios.get(numero) === "atendente") return;
+
+  // Primeira mensagem — boas-vindas
   if (!usuarios.has(numero)) {
-    usuarios.set(numero, true);
+    usuarios.set(numero, "ativo");
     await msg.reply(MSG_BOAS_VINDAS);
     return;
   }
 
-  // Responde "0" reenviando o menu
+  // Voltar ao menu
   if (texto === "0") {
     await msg.reply(MSG_BOAS_VINDAS);
     return;
   }
 
-  // Verifica se a opção existe no menu
+  // Opção do menu
   if (MENU[texto] !== undefined) {
+    if (texto === "4") {
+      usuarios.set(numero, "atendente"); // para o bot imediatamente
+    }
     await msg.reply(MENU[texto]);
     return;
   }
 
-  // Opção não reconhecida
+  // Opção inválida
   await msg.reply(MSG_OPCAO_INVALIDA);
 });
 
-// Inicia o bot
 client.initialize();
